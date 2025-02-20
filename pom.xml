@@ -135,6 +135,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>springboot-nextjs-backend</finalName>
 	</build>
 
 </project>
