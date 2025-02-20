@@ -5,6 +5,7 @@ import com.bookmarker.api.domain.BookmarkRepository;
 import com.bookmarker.api.dto.BookmarkDTO;
 import com.bookmarker.api.dto.BookmarkMapper;
 import com.bookmarker.api.dto.BookmarksDTO;
+import com.bookmarker.api.dto.CreateBookmarkRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -20,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookmarkService {
     private final BookmarkRepository repository;
+    private final BookmarkMapper mapper;
     //private final BookmarkMapper mapper;
 
     @Transactional(readOnly = true)
@@ -37,5 +40,11 @@ public class BookmarkService {
 //        Page<BookmarkDTO> bookmarkPage = repository.searchBookmarks(query, pageable);
         Page<BookmarkDTO> bookmarkPage = repository.findByTitleContainsIgnoreCase(query, pageable);
         return new BookmarksDTO(bookmarkPage);
+    }
+
+    public BookmarkDTO createBookmark(CreateBookmarkRequest request) {
+        Bookmark bookmark = new Bookmark(request.getTitle(), request.getUrl(), Instant.now());
+        Bookmark savedBookmark = repository.save(bookmark);
+        return mapper.toDTO(savedBookmark);
     }
 }
